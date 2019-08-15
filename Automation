@@ -1,0 +1,86 @@
+// Logging into to edgewords websbite using mutiple test examples to check the user can log in. 
+
+BDD Features File
+
+Feature: Login
+
+@functional
+Scenario: Logging in
+Given User i on the Edgewords Site
+When I login with "Edgewords" and "edgewords123"
+Then I am logged in 
+
+
+Scenario Outline: Mutiple logins
+Given User i on the Edgewords Site
+When i login with "<Username>" and "<Password>"
+Then I am logged in  
+
+Examples:
+
+|Username |Password 	 |
+|Edgewords|edgewords123|
+|WebDriver|edgewords123|
+|Edgewords|edgewords123|
+|WebDriver|edgewords123|
+|Edgewords|edgewords123|
+|WebDriver|edgewords123|//
+
+package step_bindings;
+
+import static org.junit.Assert.assertTrue;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.*;
+ 
+import cucumber.api.PendingException;
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
+import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
+
+
+
+public class Login_Steps {
+
+	WebDriver driver;
+
+	protected String baseUrl = "http://www.edgewordstraining.co.uk/webdriver2/sdocs/auth.php";
+	
+ @Before 
+ public void setUp() {
+	 driver = new ChromeDriver();
+ }
+
+ @After
+ public void tearDown() {
+	 driver.quit();
+ }
+ 
+
+ @Given("^User i on the Edgewords Site$")
+ public void user_i_on_the_Edgewords_Site() throws Throwable {
+	 driver.get(baseUrl);
+ }
+
+ @When("^(?:I|i) login with \"([^\"]*)\" and \"([^\"]*)\"$") 
+ public void i_login_with_and(String arg1, String arg2) throws Throwable {
+
+	
+	// Write code here that turns the phrase above into concrete actions
+	 driver.findElement(By.id("username")).sendKeys(arg1);
+	 driver.findElement(By.id("password")).sendKeys(arg2);
+	 driver.findElement(By.linkText("Submit")).click();
+	 Thread.sleep(3000);
+ }
+
+
+ @Then("^I am logged in$")
+ public void i_am_logged_in() throws Throwable {
+	 String bodytext = driver.findElement(By.tagName("Body")).getText();
+	 assertTrue(bodytext.contains("User is Logged in"));
+     // Write code here that turns the phrase above into concrete actions
+ }
+}
